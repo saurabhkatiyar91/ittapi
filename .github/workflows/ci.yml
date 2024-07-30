@@ -3,10 +3,10 @@ name: "CI"
 
 on:
   push:
-    branches: ["ci_workflow", "master", "other"]
+    branches: ["master"]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: ["ci_workflow", "master", "other"]
+    branches: ["master"]
 
 permissions:
   contents: read
@@ -17,11 +17,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: linux
+          - os: ubuntu-latest
             python: /opt/python38/bin/python3
-          - os: windows
+          - os: windows-latest
             python: C:\Python38\python.exe
-    runs-on: [self-hosted, '${{matrix.os}}']
+    runs-on: ['${{matrix.os}}']
 
     steps:
       - name: Checkout code
@@ -29,18 +29,18 @@ jobs:
       - name: install ittapi
         run:
           cd ittapi/python
-          ${{ matrix.python }} -m pip install .
+          python3 -m pip install .
 
   test:
     strategy:
       fail-fast: false
       matrix:
         include:
-          - os: linux
+          - os: ubuntu-latest
             python: /opt/python38/bin/python3
-          - os: windows
+          - os: windows-latest
             python: C:\Python38\python.exe
-    runs-on: [self-hosted, '${{matrix.os}}', analyzers-build]
+    runs-on: ['${{matrix.os}}']
     needs: build
 
     steps:
@@ -49,4 +49,4 @@ jobs:
       - name: run unit-test
         run:
           cd ittapi/python
-          ${{ matrix.python }} -m unittest discover -s utest -t utest
+          python3 -m unittest discover -s utest -t utest
