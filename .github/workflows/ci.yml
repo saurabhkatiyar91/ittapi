@@ -1,0 +1,52 @@
+# Ci workflow to be triggered for every pull-request and push
+name: "CI"
+
+on:
+  push:
+    branches: ["ci_workflow", "master"]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: ["ci_workflow", "master"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: linux
+            python: /opt/python38/bin/python3
+          - os: windows
+            python: C:\Python38\python.exe
+    runs-on: [self-hosted, '${{matrix.os}}']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: install ittapi
+        run:
+          cd ittapi/python
+          ${{ matrix.python }} -m pip install .
+
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: linux
+            python: /opt/python38/bin/python3
+          - os: windows
+            python: C:\Python38\python.exe
+    runs-on: [self-hosted, '${{matrix.os}}', analyzers-build]
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout
+      - name: run unit-test
+        run:
+          cd ittapi/python
+          ${{ matrix.python }} -m unittest discover -s utest -t utest
