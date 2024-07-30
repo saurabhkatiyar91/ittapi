@@ -3,10 +3,10 @@ name: "CI"
 
 on:
   push:
-    branches: ["ci_workflow", "master"]
+    branches: ["ci_workflow", "master"i, "other"]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: ["ci_workflow", "master"]
+    branches: ["ci_workflow", "master", "other"]
 
 permissions:
   contents: read
