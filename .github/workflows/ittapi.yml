@@ -13,20 +13,15 @@ jobs:
 
     steps:
       - name: checkout sources
-        uses: actions/checkout@v4
-
-      - name: setup python version
-        uses: actions/setup-python@v5
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
       - name: Install cibuildwheel
         run: python -m pip install cibuildwheel==2.20.0
 
       - name: Build wheels
-        run: |
-          cd python
-          python -m cibuildwheel --output-dir wheelhouse
+        run: python -m cibuildwheel python --output-dir wheelhouse
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8 # v4.3.0
         with:
           name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}
           path: ./wheelhouse/*.whl
