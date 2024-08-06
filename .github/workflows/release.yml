@@ -1,9 +1,9 @@
 name: Create release
 
-on:
-  push:
-    tags:
-      - '*'
+on: [push, pull_request]
+  #push:
+  #  tags:
+  #    - '*'
 
 permissions:
   contents: read
@@ -17,10 +17,10 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            optional_args: -pt
-          - os: windows-latest
-            optional_args: -pt --cmake_gen ninja
-          - os: macos-latest
+            #   optional_args: -pt
+            #- os: windows-latest
+            #optional_args: -pt --cmake_gen ninja
+            #- os: macos-latest
     steps:
     - name: Checkout sources
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
@@ -42,6 +42,29 @@ jobs:
         path: |
           build*/**/bin
           build*/**/fortran
+
+  python_build:
+    name: Build python ittapi package
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+      - name: checkout sources
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Build wheels for python ittapi
+        run: |
+         python -m pip install cibuildwheel==2.20.0
+         python -m cibuildwheel python --output-dir python_build/ittapi_python
+        # building for python 3.10 on linux for x86
+        env:
+          CIBW_BUILD: cp310-manylinux_x86_64
+
+      - uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8 # v4.3.0
+        with:
+          name: build-artifacts-python-${{ matrix.os }}
+          path: ./python_build/
 
   create_release:
     permissions:
@@ -74,7 +97,7 @@ jobs:
         run: |
             zip -r ittapi_build_${{ github.ref_name }}.zip include &&
             cd build-artifacts &&
-            zip -rg ../ittapi_build_${{ github.ref_name }}.zip build*/**/bin build*/**/fortran &&
+            zip -rg ../ittapi_build_${{ github.ref_name }}.zip build*/**/bin build*/**/fortran python_build &&
             cd -
       - name: Upload release asset
         id: upload-release-asset 
