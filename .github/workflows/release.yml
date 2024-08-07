@@ -56,8 +56,12 @@ jobs:
       - name: Build wheels for python ittapi
         run: |
          python -m pip install cibuildwheel==2.20.0
-         python -m cibuildwheel python --output-dir python_build_${{ matrix.os }}/
-        # building for python 3.10 on linux for x86
+         if [[ "${{ matrix.os }}" == *"windows"* ]]; then
+            python -m cibuildwheel python --output-dir python_build/python_ittapi_windows/
+          else
+            python -m cibuildwheel python --output-dir python_build/python_ittapi_linux/
+          fi
+        # building for python 3.8-3.12 on linux/windows for x86 and 64bit
         env:
           CIBW_BUILD: cp3*
           CIBW_SKIP: "*-win32 *_i686 *-musllinux_* cp313-*"
@@ -65,7 +69,7 @@ jobs:
       - uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8 # v4.3.0
         with:
           name: build-artifacts-python-${{ matrix.os }}
-          path: ./python_build*/
+          path: ./python_build/
 
   create_release:
     permissions:
@@ -98,7 +102,7 @@ jobs:
         run: |
             zip -r ittapi_build_${{ github.ref_name }}.zip include &&
             cd build-artifacts &&
-            zip -rg ../ittapi_build_${{ github.ref_name }}.zip build*/**/bin build*/**/fortran python_build*/ &&
+            zip -rg ../ittapi_build_${{ github.ref_name }}.zip build*/**/bin build*/**/fortran python_build/ &&
             cd -
       - name: Upload release asset
         id: upload-release-asset 
