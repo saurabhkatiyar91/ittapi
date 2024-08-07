@@ -21,7 +21,7 @@ jobs:
       - name: Build wheels
         run: python -m cibuildwheel python --output-dir wheelhouse
         env:
-          CIBW_BUILD: cp310-manylinux_x86_64
+          CIBW_BUILD: cp310-*
 
       - uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8 # v4.3.0
         with:
