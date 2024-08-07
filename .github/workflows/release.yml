@@ -53,9 +53,8 @@ jobs:
     steps:
       - name: checkout sources
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - name: Build wheels for python ittapi
-        run: |
-         python -m pip install cibuildwheel==2.20.0
+      - name: Install cibuildwheels
+        run: python -m pip install cibuildwheel==2.20.0
       - name: Build ittapi python wheels on Linux
         if: runner.os != 'Windows'
         run: python -m cibuildwheel python --output-dir python_build/ittapi_python_linux/
