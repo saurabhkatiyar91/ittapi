@@ -56,11 +56,12 @@ jobs:
       - name: Build wheels for python ittapi
         run: |
          python -m pip install cibuildwheel==2.20.0
-         if [[ "${{ matrix.os }}" == *"windows"* ]]; then
-            python -m cibuildwheel python --output-dir python_build/python_ittapi_windows/
-          else
-            python -m cibuildwheel python --output-dir python_build/python_ittapi_linux/
-          fi
+      - name: Build ittapi python wheels on Linux
+        if: runner.os != 'Windows'
+        run: python -m cibuildwheel python --output-dir python_build/ittapi_python_linux/
+      - name: Build ittapi python on Windows
+        if: runner.os == 'Windows'
+        run: python -m cibuildwheel python --output-dir python_build/ittapi_python_windows/
         # building for python 3.8-3.12 on linux/windows for x86 and 64bit
         env:
           CIBW_BUILD: cp3*
