@@ -60,6 +60,7 @@ jobs:
         # building for python 3.10 on linux for x86
         env:
           CIBW_BUILD: cp310-*
+          CIBW_SKIP: "*-win32 *_i686 *-musllinux_*"
 
       - uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8 # v4.3.0
         with:
