@@ -79,7 +79,7 @@ jobs:
       contents: write  # for actions/create-release to create a release
     name: Create release
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build, python_build]
     steps:
       - name: Checkout sources
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
