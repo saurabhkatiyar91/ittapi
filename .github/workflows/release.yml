@@ -31,17 +31,17 @@ jobs:
       uses: fortran-lang/setup-fortran@8821f57b53846d35d62632eb51c60ac6c4bff4ce # v1.6.1
       with:
           compiler: intel
-    - name: Build C library
-      run: python buildall.py -ft ${{ matrix.optional_args }}
-    - name: Display structure of files
-      run: ls -R
-    - name: Upload artifact
-      uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8 # v4.3.0
-      with:
-        name: build-artifacts-${{ matrix.os }}
-        path: |
-          build*/**/bin
-          build*/**/fortran
+    #- name: Build C library
+    #  run: python buildall.py -ft ${{ matrix.optional_args }}
+    #- name: Display structure of files
+    #  run: ls -R
+    #- name: Upload artifact
+    #  uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8 # v4.3.0
+    #  with:
+    #    name: build-artifacts-${{ matrix.os }}
+    #    path: |
+    #      build*/**/bin
+    #      build*/**/fortran
 
   python_build:
     name: Build python ittapi package
